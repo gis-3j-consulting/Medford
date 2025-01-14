@@ -10,7 +10,8 @@ require([
     "esri/symbols/SimpleMarkerSymbol",
     "esri/renderers/UniqueValueRenderer",
     "esri/Basemap",
-    ], function(Map, MapView, Home, Locate, Search, FeatureLayer, GeoJSONLayer, Graphic, SimpleMarkerSymbol, UniqueValueRenderer, Basemap) {
+    "esri/core/reactiveUtils"
+    ], function(Map, MapView, Home, Locate, Search, FeatureLayer, GeoJSONLayer, Graphic, SimpleMarkerSymbol, UniqueValueRenderer, Basemap, reactiveUtils) {
         var map = new Map({
         basemap: "hybrid"
     });
@@ -124,8 +125,14 @@ require([
             title: `Map comment`,
             content: `
             <b>{category}: </b>{subcategory} <br>
-            <b>Comment: </b> {comment}
-            `
+            <b>Comment: </b> {comment} <br>
+            <span id="like-count-{OBJECTID}">{like_count}</span> 👍
+            `,
+            actions: [{
+                title: "👍 Like",
+                id: "likeComment",
+                className: "esri-icon-thumbs-up"
+            }]
         }
     });
 
@@ -193,7 +200,8 @@ require([
             geometry: point,
             category: null,
             subcategory: null,
-            comment: null
+            comment: null,
+            like_count: 1
         }
     
         commentModal.style.display = 'block';
@@ -241,7 +249,8 @@ require([
                 attributes: {
                     category: pin.category,
                     subcategory: pin.subcategory,
-                    comment: pin.comment || ''
+                    comment: pin.comment || '',
+                    like_count: 1
                 }
             });
     
@@ -318,6 +327,60 @@ require([
             alert("Please enter a comment before submitting.");
         }
     });
+
+    function applyLike(event) {
+        console.log("Like action triggered", event);
+        
+        if (event.action.id === "likeComment") {
+            const selectedFeature = view.popup.selectedFeature;
+            
+            if (!selectedFeature) {
+                console.error("No feature selected");
+                return;
+            }
+
+            console.log("Current feature:", selectedFeature);
+            
+            // Get the current like count
+            let currentLikes = selectedFeature.attributes.like_count || 0;
+            currentLikes += 1;
+            
+            // Create an updated feature for the edit
+            const updatedFeature = {
+                attributes: {
+                    OBJECTID: selectedFeature.attributes.OBJECTID,
+                    like_count: currentLikes
+                }
+            };
+
+            console.log("Updating like count to:", currentLikes);
+            
+            // Update the feature
+            commentsLayer.applyEdits({
+                updateFeatures: [updatedFeature]
+            }).then(function(result) {
+                console.log("Like count updated successfully:", result);
+                
+                // Update the display in the popup
+                const likeCountElement = document.getElementById(`like-count-${selectedFeature.attributes.OBJECTID}`);
+                if (likeCountElement) {
+                    likeCountElement.textContent = currentLikes;
+                }
+                
+                // Refresh the layer view to show the updated count
+                view.popup.refresh();
+            }).catch(function(error) {
+                console.error("Error updating like count:", error);
+            });
+        }
+    }
+
+    // Update the event listener
+    reactiveUtils.on(
+        () => view.popup,
+        "trigger-action",
+        applyLike
+    );
     
     var searchWidget = new Search({
         view: view
