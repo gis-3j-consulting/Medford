@@ -341,11 +341,9 @@ require([
 
             console.log("Current feature:", selectedFeature);
             
-            // Get the current like count
             let currentLikes = selectedFeature.attributes.like_count || 0;
             currentLikes += 1;
             
-            // Create an updated feature for the edit
             const updatedFeature = {
                 attributes: {
                     OBJECTID: selectedFeature.attributes.OBJECTID,
@@ -354,20 +352,17 @@ require([
             };
 
             console.log("Updating like count to:", currentLikes);
-            
-            // Update the feature
+
             commentsLayer.applyEdits({
                 updateFeatures: [updatedFeature]
             }).then(function(result) {
                 console.log("Like count updated successfully:", result);
                 
-                // Update the display in the popup
                 const likeCountElement = document.getElementById(`like-count-${selectedFeature.attributes.OBJECTID}`);
                 if (likeCountElement) {
                     likeCountElement.textContent = currentLikes;
                 }
-                
-                // Refresh the layer view to show the updated count
+
                 view.popup.refresh();
             }).catch(function(error) {
                 console.error("Error updating like count:", error);
@@ -375,7 +370,6 @@ require([
         }
     }
 
-    // Update the event listener
     reactiveUtils.on(
         () => view.popup,
         "trigger-action",
