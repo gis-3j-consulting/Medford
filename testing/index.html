@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Medford TSAP Feedback</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/"></script>
+    </head>
+    <body>
+        <div id="central-content">
+            <span id="header">Medford Transportation Survey</span>
+            <div class="extra-content">
+                <p><b>Get Involved: Take the Phase 1 Survey!</b></p>
+                <p>Click anywhere on the map to add a comment. Click on any other comment to view or like the contents. Comments are organized under two major categories, behavioral and infrastructure concerns, and several related sub-categories. Multiple comments are welcome!</p>
+            </div>
+
+            <div id="map">
+                
+                <div class="viewDiv" id="viewDiv"></div>
+                
+                <div id="buttons-box">
+                    <button class="submitBtn" id="submitBtn">Save & Submit All Map Comments</button>
+                    <button class="cancelBtn" id="cancelBtn">Clear Comments</button>
+                </div>
+                <div id="commentModal" class="modal">
+                    <div class="modal-content">
+                        <select id="categoryDropdown" class="dropdown" style="margin-bottom: 10px;">
+                            <option value="None">Select a Category:</option>
+                            <option value="Infrastructure">Infrastructure Concerns</option>
+                            <option value="Behavior">Behavior Concerns</option>
+                        </select>
+                        <select id="infrastructureDropdown" class="dropdown" style="margin-bottom: 10px; display: none;">
+                            <option value="None">Select an Infrastructure Concern</option>
+                            <option value="Congested intersection/roadway">Congested intersection/roadway</option>
+                            <option value="Frequent driveways/intersections">Frequent driveways/intersections</option>
+                            <option value="Parking/bus maneuvering conflicts">Parking/bus maneuvering conflicts</option>
+                            <option value="Sidewalk/bicycle gap">Sidewalk/bicycle gap</option>
+                            <option value="Lighting/visibility">Lighting/visibility</option>
+                            <option value="Obstructed sight lines">Obstructed sight lines</option>
+                            <option value="Poor pavement conditions">Poor pavement conditions</option>
+                            <option value="Other (Specify)">Other (Specify)</option>
+                        </select>
+                        <select id="behaviorDropdown" class="dropdown" style="margin-bottom: 10px; display: none;">
+                            <option value="None">Select a Behavioral Concern</option>
+                            <option value="Speeding">Speeding</option>
+                            <option value="Distracted driving (walking/biking)">Distracted driving (walking/biking)</option>
+                            <option value="Impaired driving (walking/biking)">Impaired driving (walking/biking)</option>
+                            <option value="Aggressive driving">Aggressive driving</option>
+                            <option value="Failing to yield">Failing to yield</option>
+                            <option value="Disregarding traffic control">Disregarding traffic control</option>
+                            <option value="Improper street crossing">Improper street crossing</option>
+                            <option value="Riding against traffic">Riding against traffic</option>
+                            <option value="Other">Other (Specify)</option>
+                        </select>
+                        <label>Add a Comment:</label>
+                        <textarea id="commentField" rows="4" cols="50" placeholder="Type your comment here..."></textarea>
+                        <button id="submitComment" class="submitBtn">Submit Comment</button>
+                        <button id="cancelComment" class="cancelBtn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="extra-content" id="extra-comment-box">
+                <h3>Do you have any additional general comments?</h3>
+                <textarea id="extraComment"></textarea>
+            </div>
+            <button class="commentSubmit" id="commentSubmit">Submit Additional Comments</button>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

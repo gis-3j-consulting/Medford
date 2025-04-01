@@ -18,6 +18,7 @@ require([
 
     let selectedValue = 'None';
     let selectedSubcat = 'None';
+    let commenterId = 'A1A1A1';
     let addPointHandler;
 
     const commentModal = document.getElementById("commentModal");
@@ -231,51 +232,50 @@ require([
     });
 
     document.getElementById("submitBtn").addEventListener("click", function() {
-        alert("The survey is closed, thank you for input!")
-        // const validPins = tempPins.filter(pin => pin.geometry && pin.category);
+        const validPins = tempPins.filter(pin => pin.geometry && pin.category);
     
-        // if (validPins.length === 0) {
-        //     alert("No valid pins to submit.");
-        //     console.log("No valid pins found:", tempPins);
-        //     return;
-        // }
+        if (validPins.length === 0) {
+            alert("No valid pins to submit.");
+            console.log("No valid pins found:", tempPins);
+            return;
+        }
 
-        // console.log("Submitting the following valid pins:", validPins);
+        console.log("Submitting the following valid pins:", validPins);
     
-        // validPins.forEach(function(pin, index) {
-        //     console.log(`Submitting valid pin #${index + 1}:`, pin);
+        validPins.forEach(function(pin, index) {
+            console.log(`Submitting valid pin #${index + 1}:`, pin);
     
-        //     var newGraphic = new Graphic({
-        //         geometry: pin.geometry,
-        //         attributes: {
-        //             category: pin.category,
-        //             subcategory: pin.subcategory,
-        //             comment: pin.comment || '',
-        //             like_count: 1
-        //         }
-        //     });
+            var newGraphic = new Graphic({
+                geometry: pin.geometry,
+                attributes: {
+                    category: pin.category,
+                    subcategory: pin.subcategory,
+                    comment: pin.comment || '',
+                    like_count: 1
+                }
+            });
     
-        //     commentsLayer.applyEdits({
-        //         addFeatures: [newGraphic]
-        //     }).then(function(result) {
-        //         console.log(`Pin #${index + 1} submitted successfully:`, result);
-        //     }).catch(function(error) {
-        //         console.error(`Error submitting pin #${index + 1}:`, error);
-        //     });
-        // });
+            commentsLayer.applyEdits({
+                addFeatures: [newGraphic]
+            }).then(function(result) {
+                console.log(`Pin #${index + 1} submitted successfully:`, result);
+            }).catch(function(error) {
+                console.error(`Error submitting pin #${index + 1}:`, error);
+            });
+        });
     
-        // tempPins = [];
-        // view.graphics.removeAll();
+        tempPins = [];
+        view.graphics.removeAll();
     
-        // if (addPointHandler) {
-        //     addPointHandler.remove(); 
-        //     addPointHandler = null;
-        // }
+        if (addPointHandler) {
+            addPointHandler.remove(); 
+            addPointHandler = null;
+        }
 
-        // document.getElementById("extra-comment-box").style.display = 'block';
-        // document.getElementById("submitBtn").style.display = 'none';
-        // document.getElementById("cancelBtn").style.display = 'none';
-        // document.getElementById("buttons-box").innerHTML = '<h3>Map comments submitted, thank you!</h3>';
+        document.getElementById("extra-comment-box").style.display = 'block';
+        document.getElementById("submitBtn").style.display = 'none';
+        document.getElementById("cancelBtn").style.display = 'none';
+        document.getElementById("buttons-box").innerHTML = '<h3>Map comments submitted, thank you!</h3>';
 
     });    
 
@@ -295,39 +295,38 @@ require([
     });
 
     document.getElementById("commentSubmit").addEventListener("click", function() {
-        alert("The survey is closed, thank you for your input!")
-        // var extraCommentText = document.getElementById("extraComment").value.trim();
+        var extraCommentText = document.getElementById("extraComment").value.trim();
         
-        // if (extraCommentText) {
-        //     var extraCommentGraphic = new Graphic({
-        //         geometry: {
-        //             type: "point",
-        //             longitude: 0,
-        //             latitude: 0
-        //         },
-        //         attributes: {
-        //             category: "Extra Comment",
-        //             comment: extraCommentText
-        //         }
-        //     });
+        if (extraCommentText) {
+            var extraCommentGraphic = new Graphic({
+                geometry: {
+                    type: "point",
+                    longitude: 0,
+                    latitude: 0
+                },
+                attributes: {
+                    category: "Extra Comment",
+                    comment: extraCommentText
+                }
+            });
     
-        //     commentsLayer.applyEdits({
-        //         addFeatures: [extraCommentGraphic]
-        //     }).then(function(result) {
-        //         console.log("Extra comment submitted!", result);
+            commentsLayer.applyEdits({
+                addFeatures: [extraCommentGraphic]
+            }).then(function(result) {
+                console.log("Extra comment submitted!", result);
                 
-        //         var containerDiv = document.getElementById('extra-comment-box');
-        //         if (containerDiv) {
-        //             containerDiv.innerHTML = '<h3>Thanks for your feedback!</h3>';
-        //         }
-        //         document.getElementById('commentSubmit').style.display = "none";
-        //     }).catch(function(error) {
-        //         console.error("Error submitting extra comment:", error);
-        //         alert("Failed to submit extra comment. Please try again.");
-        //     });
-        // } else {
-        //     alert("Please enter a comment before submitting.");
-        // }
+                var containerDiv = document.getElementById('extra-comment-box');
+                if (containerDiv) {
+                    containerDiv.innerHTML = '<h3>Thanks for your feedback!</h3>';
+                }
+                document.getElementById('commentSubmit').style.display = "none";
+            }).catch(function(error) {
+                console.error("Error submitting extra comment:", error);
+                alert("Failed to submit extra comment. Please try again.");
+            });
+        } else {
+            alert("Please enter a comment before submitting.");
+        }
     });
 
     function applyLike(event) {
@@ -393,4 +392,31 @@ require([
     });
     view.ui.add(locateWidget, "top-left");
     view.ui.move("zoom", "top-left");
+
+    function getRandomDigit(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    function getRandomLetter() {
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return alphabet[getRandomDigit(0, alphabet.length - 1)];
+    }
+    
+    function getCommenterId() {
+        const digit1 = getRandomDigit(1, 9);
+        const digit2 = getRandomDigit(1, 9);
+        const digit3 = getRandomDigit(1, 9);
+    
+        const letter1 = getRandomLetter();
+        const letter2 = getRandomLetter();
+        const letter3 = getRandomLetter();
+    
+        return `${digit1}${letter1}${digit2}${letter2}${digit3}${letter3}`;
+    }
+
+    window.addEventListener('load', (event) => {
+        commenterId = getCommenterId();
+
+        console.log("Commenter Id: ", commenterId);
+    });
 });
